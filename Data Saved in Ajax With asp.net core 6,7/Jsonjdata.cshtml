@@ -1,0 +1,130 @@
+﻿@model WebEmployee.Models.Jsondatamodel
+@{
+    ViewData["Title"] = "Jsonjdata";
+}
+<div class="row">
+    <div class="card">
+        <div class="card-body">
+            <form>
+                <div class="form-group">
+                    <label asp-for="Name" class="control-label"></label>
+                    <input asp-for="Name"autofocus id="Name" class="form-control" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Mobile" class="control-label"></label>
+                    <input asp-for="Mobile" id="Mobile" class="form-control" />
+                    <span asp-validation-for="Mobile" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Address" class="control-label"></label>
+                    <input asp-for="Address" id="Address" class="form-control" />
+                    <span asp-validation-for="Address" class="text-danger"></span>
+                </div>
+            </form>
+            <br />
+            <div class="text-end">
+                <button class="btn btn-sm btn-primary" id="savebtn">SubmitForm</button>
+                <button class="btn btn-sm btn-danger mr-3" id="Clearfrm">Clear</button>
+            </div>
+            <br />
+            <div id="successMessage" class="alert alert-success" role="alert">
+                Data Saved Successfully!
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+
+        <script>
+            $(document).ready(function () {
+
+                $("#successMessage").hide();
+               $("#savebtn").click(function (e) {
+                    e.preventDefault();
+                    if ($.trim($("#Name").val()) == "")
+                    {
+                        alert("Name Filed is Requred");
+                        $("#Name").focus();
+                        return false;
+                    }
+                    if ($.trim($("#Mobile").val()) == "") {
+                        alert("Mobile Filed is Requred");
+                        $("#Mobile").focus();
+                        return false;
+                    }
+                    if ($.trim($("#Address").val()) == "") {
+                        alert("Address Filed is Requred");
+                        $("#Address").focus();
+                        return false;
+                    }
+                    var name = $("#Name").val();
+                    var mobile = $("#Mobile").val();
+                    var address = $("#Address").val();
+                    var fulldata = {
+                        "Name": name,
+                        "Mobile": mobile,
+                        "Address": address
+                    };
+                    console.log(fulldata);
+
+                    $.ajax({
+                        type: "POST",
+                        url: "/Employee/Jsonjdata",
+                        data: fulldata,
+                        success: function (data) {
+                            //if (data.respons == "Success")
+                            //{
+                                ClearForm();
+                                $("#successMessage").show();
+                            $("#Name").focus();
+                            //}
+                        }
+                    });
+               });
+
+                $("#Clearfrm").click(function () {
+                    ClearForm();
+                });
+                $("#Name").on("keypress", function (e) {
+                    if (e.keyCode == 13) {
+                        $("#Mobile").focus();
+                        return false;
+                    }
+                });
+                $("#Mobile").on("keypress", function (e) {
+                    if (e.keyCode == 13) {
+                        $("#Address").focus();
+                        return false;
+                    }
+                });
+                $("#Address").on("keypress", function (e) {
+                    if (e.keyCode == 13) {
+                        $("#savebtn").focus();
+                        return false;
+                    }
+                }); 
+
+
+
+
+            });
+
+            function ClearForm()
+            {
+                var name = $("#Name").val('');
+                var mobile = $("#Mobile").val('');
+                var address = $("#Address").val('');
+                $("#successMessage").hide();
+            }
+            $(document).ready(function () {
+                $("input").keypress(function () {
+                    $("#successMessage").hide();
+                });
+            });
+        </script>
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
